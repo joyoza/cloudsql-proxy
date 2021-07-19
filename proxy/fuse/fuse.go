@@ -262,10 +262,12 @@ func (r *fsRoot) Lookup(_ context.Context, req *fuse.LookupRequest, resp *fuse.L
 	if r.client != nil {
 		version, err := r.client.InstanceVersion(instance)
 		if err != nil {
+			logging.Errorf("Failed to get Instance version for %s: %v", instance, err)
 			return nil, fuse.ENOENT
 		}
 		if strings.HasPrefix(strings.ToLower(version), "postgres") {
 			if err := os.MkdirAll(path, 0755); err != nil {
+				logging.Errorf("Failed to create path %s: %v", path, err)
 				return nil, fuse.EIO
 			}
 			path = filepath.Join(linkpath, ".s.PGSQL.5432")
